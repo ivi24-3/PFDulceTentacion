@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Usuarios</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #8b5cf6;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --dark-color: #1f2937;
+            --light-bg: #f8fafc;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --border-radius: 12px;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Navbar simple y funcional */
+.navbar {
+    background-color: #1f2937 !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    color: white !important;
+}
+
+.navbar-nav .nav-link {
+    color: white !important;
+    margin: 0 0.5rem;
+    font-weight: 500;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #6366f1 !important;
+}
+
+        /* Contenedor principal */
+        .container {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            padding: 2rem;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Título principal */
+        h2 {
+            color: var(--dark-color);
+            font-weight: 700;
+            margin-bottom: 2rem;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 2px;
+        }
+
+        /* Barra de búsqueda mejorada */
+        .search-container {
+            background: var(--light-bg);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--card-shadow);
+        }
+
+        .input-group {
+            box-shadow: var(--card-shadow);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .form-control {
+            border: none;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            background: white;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+        }
+
+        /* Tabla mejorada */
+        .table-responsive {
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            border: none;
+            padding: 1rem 0.75rem;
+        }
+
+        .table tbody tr {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .table tbody tr:hover {
+            background: var(--light-bg);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .table td {
+            padding: 1rem 0.75rem;
+            vertical-align: middle;
+            border-top: none;
+        }
+
+        /* Badges mejorados */
+        .badge {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge.bg-danger {
+            background: linear-gradient(135deg, var(--danger-color), #dc2626) !important;
+        }
+
+        .badge.bg-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;
+        }
+
+        .badge.bg-success {
+            background: linear-gradient(135deg, var(--success-color), #059669) !important;
+        }
+
+        .badge.bg-warning {
+            background: linear-gradient(135deg, var(--warning-color), #d97706) !important;
+        }
+
+        .badge.bg-info {
+            background: linear-gradient(135deg, #06b6d4, #0891b2) !important;
+        }
+
+        /* Botones mejorados */
+        .btn {
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            padding: 0.5rem 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #4b5563, #374151);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            color: white;
+        }
+
+        .btn-info:hover {
+            background: linear-gradient(135deg, #0891b2, #0e7490);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger-color), #dc2626);
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+        }
+
+        /* Modal mejorado */
+        .modal-content {
+            border-radius: var(--border-radius);
+            border: none;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-bottom: none;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+
+        .modal-title {
+            font-weight: 700;
+        }
+
+        .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        /* Información dentro del modal */
+        .modal-body h6 {
+            color: var(--dark-color);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light-bg);
+        }
+
+        .modal-body p {
+            margin-bottom: 0.5rem;
+            color: #6b7280;
+        }
+
+        .modal-body strong {
+            color: var(--dark-color);
+        }
+
+        /* Código token */
+        code {
+            background: var(--light-bg);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* Tabla dentro del modal */
+        .modal-body .table {
+            margin-top: 1rem;
+        }
+
+        .modal-body .table thead th {
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+            color: var(--dark-color);
+            font-size: 0.8rem;
+        }
+
+        .table-info th {
+            background: linear-gradient(135deg, #06b6d4, #0891b2) !important;
+            color: white;
+        }
+
+        /* Mensaje de no pedidos */
+        .text-muted {
+            text-align: center;
+            padding: 2rem;
+            font-style: italic;
+            color: #6b7280;
+        }
+
+        /* Animaciones */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            animation: slideIn 0.6s ease-out;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                margin: 1rem;
+                padding: 1rem;
+            }
+            
+            .search-container {
+                padding: 1rem;
+            }
+            
+            .table-responsive {
+                font-size: 0.875rem;
+            }
+            
+            .btn-sm {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.8rem;
+            }
+            
+            .input-group {
+                flex-direction: column;
+            }
+            
+            .input-group .btn {
+                border-radius: 0 0 var(--border-radius) var(--border-radius);
+            }
+        }
+
+        /* Efectos hover para filas */
+        .table tbody tr:hover td {
+            background: var(--light-bg);
+        }
+
+        /* Mejoras para tokens */
+        small {
+            font-family: 'Courier New', monospace;
+            background: var(--light-bg);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            color: var(--primary-color);
+        }
+
+        /* Estilo para búsqueda vacía */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: #6b7280;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #d1d5db;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/admin/dashboard">
+            <i class="fas fa-crown me-2"></i>Admin - Dulce Tentación
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/admin/dashboard">
+                    <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                </a>
+                <a class="nav-link" href="/admin/products">
+                    <i class="fas fa-box me-1"></i>Productos
+                </a>
+                <a class="nav-link" href="/admin/orders">
+                    <i class="fas fa-shopping-cart me-1"></i>Pedidos
+                </a>
+                <a class="nav-link" href="/logout">
+                    <i class="fas fa-sign-out-alt me-1"></i>Salir
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+    <div class="container mt-4">
+        <h2><i class="fas fa-users me-2"></i>Gestión de Usuarios</h2>
+        
+        <!-- Búsqueda por DNI -->
+        <div class="search-container">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-0">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
+                        <input type="text" id="searchDni" class="form-control border-0" placeholder="Buscar usuario por DNI (8 dígitos)...">
+                        <button class="btn btn-primary" onclick="buscarPorDni()">
+                            <i class="fas fa-search me-1"></i>Buscar
+                        </button>
+                        <button class="btn btn-secondary" onclick="limpiarBusqueda()">
+                            <i class="fas fa-times me-1"></i>Limpiar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-hashtag me-1"></i>ID</th>
+                        <th><i class="fas fa-id-card me-1"></i>DNI</th>
+                        <th><i class="fas fa-user me-1"></i>Nombre</th>
+                        <th><i class="fas fa-envelope me-1"></i>Email</th>
+                        <th><i class="fas fa-user-tag me-1"></i>Rol</th>
+                        <th><i class="fas fa-key me-1"></i>Token</th>
+                        <th><i class="fas fa-cogs me-1"></i>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                    <tr th:each="user : ${users}">
+                        <td th:text="${user.id}">1</td>
+                        <td th:text="${user.dni}">12345678</td>
+                        <td th:text="${user.nombre}">Usuario</td>
+                        <td th:text="${user.email}">email@test.com</td>
+                        <td>
+                            <span class="badge" 
+                                  th:classappend="${user.role == 'ADMIN'} ? 'bg-danger' : 'bg-primary'"
+                                  th:text="${user.role}">USER</span>
+                        </td>
+                        <td><small th:text="${user.token}">TOKEN</small></td>
+                        <td>
+                            <button class="btn btn-sm btn-info me-1" 
+                                    th:onclick="'verPedidos(' + ${user.id} + ')'">
+                                <i class="fas fa-shopping-bag me-1"></i>Ver Pedidos
+                            </button>
+                            <button class="btn btn-sm btn-danger" 
+                                    th:if="${user.role != 'ADMIN'}"
+                                    th:onclick="'eliminarUsuario(' + ${user.id} + ')'">
+                                <i class="fas fa-trash me-1"></i>Eliminar
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Modal para mostrar pedidos del usuario -->
+        <div class="modal fade" id="pedidosModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fas fa-shopping-bag me-2"></i>Pedidos del Usuario
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="pedidosContent">
+                            <!-- Se carga dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para mostrar detalle del pedido -->
+        <div class="modal fade" id="detalleModal" tabindex="-1">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fas fa-receipt me-2"></i>Detalle del Pedido
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="detalleContent">
+                            <!-- Se carga dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        async function buscarPorDni() {
+            const dni = document.getElementById('searchDni').value;
+            if (!dni || dni.length !== 8) {
+                alert('Ingresa un DNI válido de 8 dígitos');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/admin/users/dni/${dni}`);
+                if (response.ok) {
+                    const user = await response.json();
+                    mostrarUsuario(user);
+                } else {
+                    alert('Usuario no encontrado');
+                }
+            } catch (error) {
+                alert('Error al buscar usuario');
+            }
+        }
+
+        function mostrarUsuario(user) {
+            const tbody = document.getElementById('usersTableBody');
+            tbody.innerHTML = `
+                <tr>
+                    <td>${user.id}</td>
+                    <td>${user.dni}</td>
+                    <td>${user.nombre}</td>
+                    <td>${user.email}</td>
+                    <td><span class="badge ${user.role === 'ADMIN' ? 'bg-danger' : 'bg-primary'}">${user.role}</span></td>
+                    <td><small>${user.token}</small></td>
+                    <td>
+                        <button class="btn btn-sm btn-info me-1" onclick="verPedidos(${user.id})">
+                            <i class="fas fa-shopping-bag me-1"></i>Ver Pedidos
+                        </button>
+                        ${user.role !== 'ADMIN' ? `<button class="btn btn-sm btn-danger" onclick="eliminarUsuario(${user.id})"><i class="fas fa-trash me-1"></i>Eliminar</button>` : ''}
+                    </td>
+                </tr>
+            `;
+        }
+
+        function limpiarBusqueda() {
+            document.getElementById('searchDni').value = '';
+            location.reload();
+        }
+
+        async function verPedidos(userId) {
+            try {
+                const response = await fetch(`/api/admin/users/${userId}/orders`);
+                const pedidos = await response.json();
+                
+                let content = '';
+                if (pedidos.length === 0) {
+                    content = `
+                        <div class="empty-state">
+                            <i class="fas fa-shopping-cart"></i>
+                            <h5>Sin pedidos</h5>
+                            <p class="text-muted">Este usuario no ha realizado ningún pedido aún.</p>
+                        </div>
+                    `;
+                } else {
+                    content = `
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th><i class="fas fa-hashtag me-1"></i>ID</th>
+                                    <th><i class="fas fa-calendar me-1"></i>Fecha</th>
+                                    <th><i class="fas fa-dollar-sign me-1"></i>Total</th>
+                                    <th><i class="fas fa-info-circle me-1"></i>Estado</th>
+                                    <th><i class="fas fa-key me-1"></i>Token</th>
+                                    <th><i class="fas fa-cogs me-1"></i>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+                    
+                    pedidos.forEach(pedido => {
+                        const fecha = new Date(pedido.fecha).toLocaleDateString();
+                        const estadoBadge = pedido.estado === 'DESPACHADO' ? 'bg-success' : 'bg-warning';
+                        content += `
+                            <tr>
+                                <td>${pedido.id}</td>
+                                <td>${fecha}</td>
+                                <td><strong>S/ ${pedido.total}</strong></td>
+                                <td><span class="badge ${estadoBadge}">${pedido.estado}</span></td>
+                                <td><small>${pedido.tokenPedido}</small></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary" onclick="verDetallePedido(${pedido.id})">
+                                        <i class="fas fa-eye me-1"></i>Ver Detalle
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    
+                    content += '</tbody></table>';
+                }
+                
+                document.getElementById('pedidosContent').innerHTML = content;
+                new bootstrap.Modal(document.getElementById('pedidosModal')).show();
+                
+            } catch (error) {
+                alert('Error al cargar pedidos');
+            }
+        }
+
+        async function verDetallePedido(pedidoId) {
+            try {
+                const response = await fetch(`/api/admin/orders/${pedidoId}/details`);
+                const pedido = await response.json();
+                
+                let content = `
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-info-circle me-2"></i>Información del Pedido</h6>
+                            <p><strong>ID:</strong> ${pedido.id}</p>
+                            <p><strong>Cliente:</strong> ${pedido.user.nombre}</p>
+                            <p><strong>Fecha:</strong> ${new Date(pedido.fecha).toLocaleDateString()}</p>
+                            <p><strong>Estado:</strong> <span class="badge ${pedido.estado === 'DESPACHADO' ? 'bg-success' : 'bg-warning'}">${pedido.estado}</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Total:</strong> <span style="color: var(--success-color); font-size: 1.2em; font-weight: bold;">S/ ${pedido.total}</span></p>
+                            <p><strong>Token:</strong> <code>${pedido.tokenPedido}</code></p>
+                        </div>
+                    </div>
+                    
+                    <h6><i class="fas fa-box me-2"></i>Productos del Pedido</h6>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Precio Unit.</th>
+                                <th>Cantidad</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                pedido.items.forEach(item => {
+                    const subtotal = item.precio * item.cantidad;
+                    content += `
+                        <tr>
+                            <td><strong>${item.product.nombre}</strong></td>
+                            <td>S/ ${item.precio}</td>
+                            <td><span class="badge bg-info">${item.cantidad}</span></td>
+                            <td><strong>S/ ${subtotal.toFixed(2)}</strong></td>
+                        </tr>
+                    `;
+                });
+                
+                content += `
+                        </tbody>
+                        <tfoot>
+                            <tr class="table-info">
+                                <th colspan="3">TOTAL</th>
+                                <th>S/ ${pedido.total}</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                `;
+                
+                document.getElementById('detalleContent').innerHTML = content;
+                new bootstrap.Modal(document.getElementById('detalleModal')).show();
+                
+            } catch (error) {
+                alert('Error al cargar detalle del pedido');
+            }
+        }
+
+        function eliminarUsuario(userId) {
+            if (confirm('¿Estás seguro de eliminar este usuario?')) {
+                fetch('/api/admin/users/' + userId, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        alert('Error al eliminar usuario');
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>

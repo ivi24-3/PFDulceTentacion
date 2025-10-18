@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        /* ========== ESTILOS GENERALES ========== */
+        :root {
+            --primary-color: #8B4513;
+            --primary-light: #A0522D;
+            --primary-dark: #654321;
+            --secondary-color: #D2691E;
+            --accent-color: #FFD700;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --light-bg: #FFF8DC;
+            --card-shadow: 0 4px 15px rgba(139, 69, 19, 0.1);
+            --hover-shadow: 0 8px 25px rgba(139, 69, 19, 0.2);
+            --border-radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background: linear-gradient(135deg, #FFF8DC 0%, #FFEFD5 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        /* ========== NAVBAR MEJORADO ========== */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%) !important;
+            box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
+            padding: 1rem 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--accent-color) !important;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            transition: var(--transition);
+        }
+
+        .navbar-brand:hover {
+            color: #FFF !important;
+            transform: scale(1.05);
+        }
+
+        .navbar-nav .nav-link {
+            color: #FFF !important;
+            font-weight: 500;
+            margin: 0 0.5rem;
+            padding: 0.5rem 1rem !important;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .navbar-nav .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: var(--transition);
+        }
+
+        .navbar-nav .nav-link:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .navbar-nav .nav-link:hover::before {
+            left: 100%;
+        }
+
+        /* ========== CONTENEDORES Y TÍTULOS ========== */
+        .container {
+            max-width: 1200px;
+        }
+
+        h2, h4 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 2rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        h2::after, h4::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 2px;
+        }
+
+        /* ========== CARDS MEJORADAS ========== */
+        .card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            overflow: hidden;
+            background: #FFF;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .card-text {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .text-primary {
+            color: var(--secondary-color) !important;
+            font-size: 1.25rem;
+        }
+
+        .text-muted {
+            color: #888 !important;
+            font-size: 0.9rem;
+        }
+
+        /* ========== TABLAS MEJORADAS ========== */
+        .table {
+            background: #FFF;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+
+        .table thead th {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+            color: #FFF;
+            font-weight: 600;
+            border: none;
+            padding: 1rem;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(139, 69, 19, 0.05);
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background: rgba(139, 69, 19, 0.02);
+        }
+
+        /* ========== BOTONES MEJORADOS ========== */
+        .btn {
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            transition: var(--transition);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: var(--transition);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+            box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139, 69, 19, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-color) 0%, #34ce57 100%);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #34ce57 0%, var(--success-color) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+        }
+
+        .btn-lg {
+            padding: 1rem 2rem;
+            font-size: 1rem;
+        }
+
+        /* ========== FORMULARIOS MEJORADOS ========== */
+        .form-control {
+            border-radius: var(--border-radius);
+            border: 2px solid #e0e0e0;
+            padding: 0.75rem 1rem;
+            transition: var(--transition);
+            background: #FFF;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(139, 69, 19, 0.25);
+        }
+
+        /* ========== BADGES MEJORADOS ========== */
+        .badge {
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .bg-success {
+            background: linear-gradient(135deg, var(--success-color) 0%, #34ce57 100%) !important;
+        }
+
+        .bg-warning {
+            background: linear-gradient(135deg, var(--warning-color) 0%, #ffcd39 100%) !important;
+            color: #000 !important;
+        }
+
+        /* ========== ALERTAS MEJORADAS ========== */
+        .alert {
+            border-radius: var(--border-radius);
+            border: none;
+            box-shadow: var(--card-shadow);
+            padding: 1.5rem;
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+            color: #0c5460;
+        }
+
+        .alert-info a {
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .alert-info a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        /* ========== CÓDIGO MEJORADO ========== */
+        code {
+            background: rgba(139, 69, 19, 0.1);
+            color: var(--primary-color);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* ========== EFECTOS ADICIONALES ========== */
+        .table-responsive {
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .d-flex {
+            gap: 0.5rem;
+        }
+
+        .text-end {
+            margin-top: 2rem;
+        }
+
+        .fw-bold {
+            font-weight: 700 !important;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.5rem;
+            }
+            
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .card-body {
+                padding: 1rem;
+            }
+            
+            .table thead th,
+            .table tbody td {
+                padding: 0.75rem 0.5rem;
+                font-size: 0.85rem;
+            }
+            
+            .btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        /* ========== ANIMACIONES ========== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container > * {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .card {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .table {
+            animation: fadeInUp 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">Dulce Tentación</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/user/dashboard">Dashboard</a>
+                <a class="nav-link" href="/user/cart">Carrito</a>
+                <a class="nav-link" href="/logout">Salir</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h2>Productos Disponibles</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4" th:each="product : ${products}">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${product.nombre}">Producto</h5>
+                        <p class="card-text" th:text="${product.descripcion}">Descripción</p>
+                        <p class="text-primary fw-bold">S/ <span th:text="${product.precio}">0.00</span></p>
+                        <p class="text-muted">Stock: <span th:text="${product.stock}">0</span></p>
+                        
+                        <form th:action="@{/user/cart/add}" method="post" class="d-flex">
+                            <input type="hidden" name="productId" th:value="${product.id}">
+                            <input type="number" name="quantity" value="1" min="1" 
+                                   th:max="${product.stock}" class="form-control me-2" style="width: 80px;">
+                            <button type="submit" class="btn btn-primary">Agregar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
