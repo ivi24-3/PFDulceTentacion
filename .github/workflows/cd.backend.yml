@@ -1,0 +1,20 @@
+name: CD Backend
+
+on:
+  push:
+    paths:
+      - 'backend/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Obtención de código
+        uses: actions/checkout@v3
+
+      - name: Simulación de despliegue
+        run: echo "Desplegando Backend..."
+
+      - name: Finalización
+        run: echo "Backend desplegado con éxito."
