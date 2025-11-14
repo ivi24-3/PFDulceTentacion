@@ -1,0 +1,20 @@
+name: CD Frontend
+
+on:
+  push:
+    paths:
+      - 'frontend/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Obtener código
+        uses: actions/checkout@v3
+
+      - name: Simulación despliegue
+        run: echo "Desplegando Frontend..."
+
+      - name: Finalización
+        run: echo "Frontend desplegado con éxito."
