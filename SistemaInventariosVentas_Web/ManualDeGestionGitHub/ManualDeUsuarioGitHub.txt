@@ -1,0 +1,36 @@
+Manual de Usuario de GitHub – Sistema de Inventarios y Ventas Web
+
+1. Requisitos previos
+- Tener instalado Git en la PC.
+- Contar con un usuario registrado en GitHub.
+- Tener acceso al repositorio del proyecto.
+
+2. Clonación del repositorio
+git clone https://github.com/usuario/Proyecto-Inventarios-Ventas.git
+
+3. Crear una nueva rama para trabajar
+git checkout -b feature-nueva-funcion
+
+4. Guardar cambios en el repositorio local
+git add .
+git commit -m "Descripción del cambio realizado"
+
+5. Subir los cambios al repositorio remoto
+git push origin feature-nueva-funcion
+
+6. Crear un Pull Request en GitHub
+- Ingresar a GitHub.
+- Seleccionar la rama creada.
+- Hacer clic en “New Pull Request”.
+- Enviar solicitud para revisión.
+
+7. Verificación automática por GitHub Actions
+- Revisar que los workflows CI/CD se ejecuten sin errores.
+
+8. Unir cambios a la rama principal (main)
+- Realizar el merge una vez aprobados.
+
+9. Actualizar la copia local del repositorio
+git pull origin main
+
+Fin del manual.
